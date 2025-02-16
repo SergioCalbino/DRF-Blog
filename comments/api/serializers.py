@@ -10,7 +10,7 @@ class CommentListSerializer(serializers.ModelSerializer):
     post = PostListSerializer()
     class Meta:
         model = Comment
-        fields = ['id','content', 'user', 'post']
+        fields = ['id','content','created_at', 'user', 'post']
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
@@ -26,4 +26,4 @@ class CommentDetailSerializer(serializers.ModelSerializer):
     post = serializers.PrimaryKeyRelatedField(queryset=Post.objects.all())
     class Meta:
         model = Comment
-        fields = ['content', 'user', 'post']
+        fields = ['content', 'user', 'post', 'created_at']

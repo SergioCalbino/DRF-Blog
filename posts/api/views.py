@@ -41,24 +41,38 @@ class PostListView(APIView):
                 return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         paginator = CustomPagination()
-        paginator.page_size = 3
+        paginator.page_size = 5
         paginated_post = paginator.paginate_queryset(posts, request)
         serializer = PostListSerializer(paginated_post, many=True)
+        paginated_response = paginator.get_paginated_response(serializer.data).data
 
-        # return Response(data=serializer.data, status=status.HTTP_200_OK)
-        return paginator.get_paginated_response(serializer.data)
+        # Construimos la respuesta con solo el array de posts
+        response = Response(serializer.data, status=status.HTTP_200_OK)
+
+        # Agregamos los headers con la información de paginación
+        response["X-Total-Count"] = paginated_response["count"]  # Total de elementos
+        print(f'Soy el x total count{response["X-Total-Count"]}')
+        response["X-Next-Page"] = paginated_response["next"] if paginated_response["next"] else ""
+        print(f'Soy el x next page {response["X-Next-Page"]}')
+        response["X-Previous-Page"] = paginated_response["previous"] if paginated_response["previous"] else ""
+
+        return response
+
 
 class PostCreateView(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    # permission_classes = [IsAdminOrReadOnly]
     def post(self, request):
         serializer = PostSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-        return Response({'message': 'Error to create post'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not serializer.is_valid():
+            print(serializer.errors)
+            return Response(data={'message': 'error to create Post', 'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST )
+        serializer.save()
+        return Response(data={'message': 'Post created successfully', 'post': serializer.data}, status=status.HTTP_201_CREATED)
+        # return Response({'message': 'Error to create post'}, status=status.HTTP_400_BAD_REQUEST)
 
 class PostDetailView(APIView):
-    permission_classes = [IsAdminOrReadOnly, IsOwnerOrStaff]
+    # permission_classes = [IsAdminOrReadOnly, IsOwnerOrStaff]
     def get(self, request, slug):
 
         try:
@@ -84,7 +98,7 @@ class PostDetailView(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
+            return Response(data={'message': 'Post updated successfully', 'post': serializer.data}, status=status.HTTP_200_OK)
 
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -115,7 +129,7 @@ class PostDetailView(APIView):
         self.check_object_permissions(request, post)
 
         post.delete()
-        return Response({'message': 'Post deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        return Response({'message': 'Post deleted successfully'}, status=status.HTTP_200_OK)
 
 
 
