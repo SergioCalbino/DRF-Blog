@@ -29,7 +29,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'slug', 'user', 'miniature', 'created_at', 'published', 'category']
+        fields = ['id','title', 'content', 'slug', 'user', 'miniature', 'created_at', 'published', 'category']
 
 
 
@@ -38,4 +38,4 @@ class PostListSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     class Meta:
         model = Post
-        fields = ['title', 'content', 'slug', 'user', 'miniature', 'created_at', 'published', 'category']
+        fields = ['id', 'title', 'content', 'slug', 'user', 'miniature', 'created_at', 'published', 'category']

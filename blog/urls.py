@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
+from django.conf import settings
+from django.conf.urls.static import static
 from setuptools.extern import names
 # from categories.api.router import router_categories
 # from posts.api.router import router_posts
@@ -40,9 +42,11 @@ urlpatterns = [
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redocs/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path('api/', include('users.api.router')),
+    path('api/', include('users.password.router')),
+
     # path('api/', include(router_categories.urls)),
     # path('api/', include(router_posts.urls)),
     path('api/', include('categories.api.router')),
     path('api/', include('posts.api.router')),
     path('api/', include('comments.api.router'))
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
