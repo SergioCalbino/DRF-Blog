@@ -58,7 +58,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Configuración de correo electrónico en settings.py
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "serggio.c86@gmail.com"
+EMAIL_HOST_PASSWORD = "ngib noys pxhn zdbu"
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
@@ -69,6 +77,12 @@ CORS_ALLOW_HEADERS = [
     'x-total-count',
     'x-next-page',
     'x-previous-page',
+    "authorization",
+    "content-type",
+    "x-requested-with",
+    "accept",
+    "origin",
+    "x-csrftoken",
 ]
 
 CORS_EXPOSE_HEADERS = [
@@ -77,6 +91,16 @@ CORS_EXPOSE_HEADERS = [
     'x-previous-page',
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+]
 
 ROOT_URLCONF = 'blog.urls'
 

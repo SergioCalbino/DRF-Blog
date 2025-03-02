@@ -13,16 +13,6 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['title', 'content', 'slug', 'user', 'miniature', 'created_at', 'published', 'category']
 
-    # def create(self, validated_data):
-    #     user_data = validated_data.get('user')
-    #     category_data = validated_data.get('category')
-    #
-    #     user = User.objects.get(**user_data)
-    #     category = Category.objects.get(**category_data)
-    #
-    #     post = Post.objects.create(user=user, category=category, **validated_data)
-    #     return post
-
 class PostDetailSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())

@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db.utils import IntegrityError
-from users.api.serializers import UserRegisterSerializer, UserSerializer, UserUpdateSerializer
+from users.api.serializers import UserRegisterSerializer, UserSerializer, UserUpdateSerializer, VerifyCodeSerializer, ReSendCodeSerializer
 from users.models import User
 from rest_framework.permissions import IsAuthenticated
 
@@ -53,4 +53,22 @@ class UserShowAll(APIView):
         serializer = UserSerializer(user, many=True)
 
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+class VerifyCodeView(APIView):
+    def post(self, request):
+        serializer = VerifyCodeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data={'message': 'You account was verified'}, status=status.HTTP_200_OK)
+        return Response(data={'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class ReSendCodeView(APIView):
+    def post(self, request):
+        serializer = ReSendCodeSerializer(data=request.data)
+        print(f'Quiero ver la requeset data {request.data}')
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data={'message': 'New code was sending'}, status=status.HTTP_200_OK)
+        return Response(data={'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
 
