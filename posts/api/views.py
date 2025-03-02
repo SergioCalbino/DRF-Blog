@@ -8,6 +8,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from categories.models import Category
 from posts.api.paginations import CustomPagination
+from rest_framework.permissions import IsAuthenticated
+
 
 
 # class PostApiViewSet(ModelViewSet):
@@ -20,7 +22,7 @@ from posts.api.paginations import CustomPagination
 #     filterset_fields = ['category__slug']
 
 class PostListView(APIView):
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         posts = Post.objects.all()
@@ -60,7 +62,7 @@ class PostListView(APIView):
 
 
 class PostCreateView(APIView):
-    # permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminOrReadOnly]
     def post(self, request):
         serializer = PostSerializer(data=request.data)
 
@@ -72,7 +74,7 @@ class PostCreateView(APIView):
         # return Response({'message': 'Error to create post'}, status=status.HTTP_400_BAD_REQUEST)
 
 class PostDetailView(APIView):
-    # permission_classes = [IsAdminOrReadOnly, IsOwnerOrStaff]
+    permission_classes = [IsAdminOrReadOnly, IsOwnerOrStaff]
     def get(self, request, slug):
 
         try:
